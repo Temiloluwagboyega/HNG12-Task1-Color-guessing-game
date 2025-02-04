@@ -51,7 +51,7 @@ const ColorGame = () => {
   const handleGuess = (color) => {
     if (color === targetColor) {
       setScore(prev => prev + 1);
-      setGameStatus('Correct! Well done!');
+      setGameStatus('Correct 🎉! Well done!');
       setIsCorrect(true);
       setTimeout(startNewGame, 1500);
     } else {
@@ -91,7 +91,7 @@ const ColorGame = () => {
 
           <div 
             data-testid="score"
-            className="text-2xl font-semibold"
+            className="text-2xl text-black font-semibold"
           >
             Score: {score}
           </div>

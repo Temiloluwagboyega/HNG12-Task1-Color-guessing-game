@@ -85,7 +85,7 @@ const ColorGame = () => {
         <div className="flex flex-col items-center gap-6 md:gap-8">
           <div
             data-testid="colorBox"
-            className="w-40 h-40 md:w-48 md:h-48 rounded-lg shadow-md transition-all duration-300"
+            className="w-40 h-40 md:w-40 md:h-48 rounded-lg shadow-md transition-all duration-300"
             style={{ backgroundColor: targetColor }}
           />
 
@@ -114,7 +114,7 @@ const ColorGame = () => {
                 key={index}
                 data-testid="colorOption"
                 aria-label={`Color option ${index + 1}`}
-                className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg shadow-md hover:scale-105 
+                className="w-12 h-12 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg shadow-md hover:scale-105 
                          transition-transform duration-200 cursor-pointer"
                 style={{ backgroundColor: color }}
                 onClick={() => handleGuess(color)}

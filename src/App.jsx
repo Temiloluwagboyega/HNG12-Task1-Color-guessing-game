@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { AlertCircle, Check } from 'lucide-react';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { AlertCircle, Check } from "lucide-react";
+import "./App.css";
 
 const generateRandomColor = () => {
   const r = Math.floor(Math.random() * 256);
@@ -9,39 +9,21 @@ const generateRandomColor = () => {
   return `rgb(${r}, ${g}, ${b})`;
 };
 
-const generateSimilarColor = (baseColor) => {
-  const match = baseColor.match(/\d+/g);
-  if (!match) return generateRandomColor();
-  
-  const [r, g, b] = match.map(Number);
-  const variation = 30;
-  const newR = Math.min(255, Math.max(0, r + (Math.random() - 0.5) * variation));
-  const newG = Math.min(255, Math.max(0, g + (Math.random() - 0.5) * variation));
-  const newB = Math.min(255, Math.max(0, b + (Math.random() - 0.5) * variation));
-  
-  return `rgb(${Math.round(newR)}, ${Math.round(newG)}, ${Math.round(newB)})`;
-};
-
 const generateOptions = (correctColor) => {
-  const options = [correctColor];
-  options.push(generateSimilarColor(correctColor));
-  options.push(generateSimilarColor(correctColor));
-  
-  while (options.length < 6) {
-    const newColor = generateRandomColor();
-    if (!options.includes(newColor)) {
-      options.push(newColor);
-    }
+  const options = new Set([correctColor]); // Ensure correct colour is in the options
+
+  while (options.size < 6) {
+    options.add(generateRandomColor());
   }
-  
-  return options.sort(() => Math.random() - 0.5);
+
+  return Array.from(options).sort(() => Math.random() - 0.5);
 };
 
 const ColorGame = () => {
   const [targetColor, setTargetColor] = useState(generateRandomColor());
   const [options, setOptions] = useState([]);
   const [score, setScore] = useState(0);
-  const [gameStatus, setGameStatus] = useState('');
+  const [gameStatus, setGameStatus] = useState("");
   const [isCorrect, setIsCorrect] = useState(null);
 
   useEffect(() => {
@@ -50,76 +32,75 @@ const ColorGame = () => {
 
   const handleGuess = (color) => {
     if (color === targetColor) {
-      setScore(prev => prev + 1);
-      setGameStatus('Correct 🎉! Well done!');
+      setScore((prev) => prev + 1);
+      setGameStatus("Correct 🎉! Well done!");
       setIsCorrect(true);
-      setTimeout(startNewGame, 1500);
+      setTimeout(changeColor, 1500);
     } else {
-      setGameStatus('Wrong guess! Try again!');
+      setGameStatus("Wrong guess! Try again!");
       setIsCorrect(false);
     }
 
     setTimeout(() => {
-      setGameStatus('');
+      setGameStatus("");
       setIsCorrect(null);
     }, 1500);
   };
 
-  const startNewGame = () => {
+  const changeColor = () => {
     const newColor = generateRandomColor();
     setTargetColor(newColor);
+    setOptions(generateOptions(newColor));
+  };
+
+  const startNewGame = () => {
+    setScore(0);
+    changeColor();
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-8 text-black">Color Guessing Game</h1>
-        
-        <div 
-          data-testid="gameInstructions"
-          className="text-center mb-8 text-gray-600"
-        >
+    <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex items-center justify-center">
+      <div className="w-full max-w-lg md:max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 md:p-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8 text-black">
+          Color Guessing Game
+        </h2>
+
+        <div data-testid="gameInstructions" className="text-center mb-6 text-gray-600 text-sm md:text-base">
           Match the color! Click on the button that matches the color shown in the box above.
         </div>
 
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-6 md:gap-8">
           <div
             data-testid="colorBox"
-            className="w-48 h-48 rounded-lg shadow-md transition-all duration-300"
+            className="w-40 h-40 md:w-48 md:h-48 rounded-lg shadow-md transition-all duration-300"
             style={{ backgroundColor: targetColor }}
           />
 
-          <div 
-            data-testid="score"
-            className="text-2xl text-black font-semibold"
-          >
+          <div data-testid="score" className="text-xl md:text-2xl text-black font-semibold">
             Score: {score}
           </div>
 
           {gameStatus && (
-            <div 
+            <div
               data-testid="gameStatus"
-              className={`w-full max-w-sm p-4 rounded-lg flex items-center gap-2 ${
-                isCorrect 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-red-100 text-red-800'
-              } animate-fade-in`}
+              className={`w-full max-w-sm p-3 md:p-4 rounded-lg flex items-center gap-2 text-sm md:text-base 
+                ${isCorrect ? "bg-green-100 text-green-800 animate-fade-in" : "bg-red-100 text-red-800 animate-fade-in"}`}
             >
               {isCorrect ? (
-                <Check className="h-6 w-6 text-green-600" />
+                <Check className="h-5 w-5 md:h-6 md:w-6 text-green-600" />
               ) : (
-                <AlertCircle className="h-6 w-6 text-red-600" />
+                <AlertCircle className="h-5 w-5 md:h-6 md:w-6 text-red-600" />
               )}
               <span className="font-medium">{gameStatus}</span>
             </div>
           )}
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
             {options.map((color, index) => (
               <button
                 key={index}
                 data-testid="colorOption"
-                className="w-24 h-24 rounded-lg shadow-md hover:scale-105 
+                className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg shadow-md hover:scale-105 
                          transition-transform duration-200 cursor-pointer"
                 style={{ backgroundColor: color }}
                 onClick={() => handleGuess(color)}
@@ -127,14 +108,25 @@ const ColorGame = () => {
             ))}
           </div>
 
-          <button
-            data-testid="newGameButton"
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg 
-                     hover:bg-blue-600 transition-colors duration-200"
-            onClick={startNewGame}
-          >
-            New Game
-          </button>
+          <div className="flex gap-4">
+            <button
+              data-testid="newGameButton"
+              className="px-4 py-2 md:px-6 md:py-3 bg-red-500 text-white rounded-lg 
+                       hover:bg-red-600 transition-colors duration-200"
+              onClick={startNewGame}
+            >
+              New Game 
+            </button>
+
+            <button
+              data-testid="changeColorButton"
+              className="px-4 py-2 md:px-6 md:py-3 bg-blue-500 text-white rounded-lg 
+                       hover:bg-blue-600 transition-colors duration-200"
+              onClick={changeColor}
+            >
+              Change Color
+            </button>
+          </div>
         </div>
       </div>
     </div>

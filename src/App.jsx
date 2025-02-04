@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { AlertCircle, Check } from "lucide-react";
 import "./App.css";
 
-// ✅ Predefined color set (Task Requirement)
 const PREDEFINED_COLORS = [
   "#FF0000", "#00FF00", "#0000FF",
   "#FFFF00", "#FF00FF", "#00FFFF",
@@ -10,14 +9,12 @@ const PREDEFINED_COLORS = [
   "#A52A2A", "#808000", "#008080"
 ];
 
-// ✅ Function to select a random color from the predefined set
 const generateRandomColor = () => {
   return PREDEFINED_COLORS[
     Math.floor(Math.random() * PREDEFINED_COLORS.length)
   ];
 };
 
-// ✅ Generate six options: one correct + five random colors
 const generateOptions = (correctColor) => {
   const options = new Set([correctColor]);
 
@@ -28,7 +25,6 @@ const generateOptions = (correctColor) => {
   return Array.from(options).sort(() => Math.random() - 0.5);
 };
 
-// ✅ Normalize colors for accurate comparison
 const normalizeColor = (color) => color.replace(/\s+/g, "").toLowerCase();
 
 const ColorGame = () => {
